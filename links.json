@@ -1,0 +1,29 @@
+{
+    "1": {
+        "dlLink": "https://dl.nure.ua/course/view.php?id=5037",
+        "dlChatLink": "https://dl.nure.ua/mod/chat/view.php?id=90123",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82771",
+        "googleMeetLink": "https://meet.google.com/tdd-mghe-pjt"
+    },
+    "2": {
+        "dlLink": "https://dl.nure.ua/course/view.php?id=4672",
+        "dlChatLink": "https://dl.nure.ua/mod/chat/view.php?id=95563",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=80581",
+        "googleMeetLink": "https://meet.google.com/tkf-nrcz-shu"
+    },
+    "3": {
+        "dlLink": "https://dl.nure.ua/course/view.php?id=4442"
+    },
+    "4": {
+        "dlLink": "https://dl.nure.ua/course/view.php?id=5042",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82801"
+    },
+    "5": {
+        "dlLink": "https://dl.nure.ua/course/view.php?id=5005",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82579"
+    },
+    "6": {
+        "dlLink": "https://dl.nure.ua/course/view.php?id=5007",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82591"
+    }
+}
