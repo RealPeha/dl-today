@@ -18,10 +18,6 @@ const getLecturesByDate = (date) => {
 }
 
 const getFormattedLectures = (lectures) => {
-    if (!lectures.length) {
-        return 'Лекций нет'
-    }
-
     const lecturesText = lectures.map(({
         id,
         time,
@@ -51,14 +47,19 @@ const getFormattedLectures = (lectures) => {
     return lecturesText
 }
 
-const sendLectures = ({ reply }, date) => {
+const sendLectures = ({ reply, replyWithAnimation }, date) => {
     try {
         const lectures = getLecturesByDate(date)
+
+        if (!lectures.length) {
+            return replyWithAnimation({ source: 'dog.mp4' })
+        }
 
         const formattedLectures = getFormattedLectures(lectures)
 
         return reply(formattedLectures, Extra.HTML().webPreview(false))
     } catch (e) {
+        console.log(e)
         return reply('Произошла внутрення ошибка')
     }
 }
