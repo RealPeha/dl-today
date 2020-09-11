@@ -5,14 +5,12 @@ const {
     link,
     formatDate
 } = require('./utils')
-
-const lectures = require('./data/lectures.json')
-const timetable = require('./data/timetable.json')
+const db = require('./db')
 
 const emojis = ['🧻', '🚽', '🗿', '🦷', '👨🏼‍🦳']
 
 const getTimetableForDate = (date) => {
-    return timetable.filter(lecture => lecture.date === date)
+    return db.timetable.filter(lecture => lecture.date === date)
 }
 
 const formatTimetable = (timetableForDate) => {
@@ -26,7 +24,7 @@ const formatTimetable = (timetableForDate) => {
             dlChatLink,
             dlVisitLink,
             googleMeetLink,
-        } = lectures[id] || {};
+        } = db.lectures[id] || {};
 
         const linksFormatted = [
             link('DL', dlLink),
@@ -72,6 +70,7 @@ const sendTimetable = (formattedTimetable) => ({ reply, replyWithAnimation }) =>
 }
 
 const timetableToday = () => {
+    console.log(formatDate(new Date()))
     return getFormattedTimetableForDate(formatDate(new Date()))
 }
 

@@ -5,6 +5,7 @@ const {
     timetableToday,
     timetableTomorrow,
 } = require('./timetable.js')
+const db = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
 
@@ -16,11 +17,11 @@ bot.start(({ reply }) => {
   )
 })
 
-bot.hears('Лекции сегодня', sendTimetable(timetableToday()))
-bot.hears('Лекции завтра', sendTimetable(timetableTomorrow()))
+bot.hears('Лекции сегодня', (ctx) => sendTimetable(timetableToday())(ctx))
+bot.hears('Лекции завтра', (ctx) => sendTimetable(timetableTomorrow())(ctx))
 
-bot.command('/today', sendTimetable(timetableToday()))
-bot.command('/tomorrow', sendTimetable(timetableTomorrow()))
+bot.command('/today', (ctx) => sendTimetable(timetableToday())(ctx))
+bot.command('/tomorrow', (ctx) => sendTimetable(timetableTomorrow())(ctx))
 
 bot.on('inline_query', (ctx) => {
     try {
@@ -54,4 +55,16 @@ bot.on('inline_query', (ctx) => {
     }
 })
 
-bot.launch()
+bot.command('update', async ({ reply }) => {
+    await db.update()
+
+    return reply('Updated')
+})
+
+const launch = async () => {
+    await db.update()
+
+    bot.launch()
+}
+
+launch()
