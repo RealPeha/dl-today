@@ -15,7 +15,7 @@ const getTimetableForDate = (date) => {
     return timetable.filter(lecture => lecture.date === date)
 }
 
-const getFormattedTimetable = (timetableForDate) => {
+const formatTimetable = (timetableForDate) => {
     const formattedTimetable = timetableForDate.map(({
         id,
         time
@@ -41,39 +41,49 @@ const getFormattedTimetable = (timetableForDate) => {
     return formattedTimetable
 }
 
-const sendTimetable = ({ reply, replyWithAnimation }, date) => {
+const getFormattedTimetableForDate = (date) => {
+    const timetableForDate = getTimetableForDate(date)
+
+    if (!timetableForDate.length) {
+        return null
+    }
+
+    const formattedTimetable = formatTimetable(timetableForDate)
+
+    if (!formattedTimetable.trim()) {
+        return 'Ошибка с базой данных лекций'
+    }
+
+    return formattedTimetable
+}
+
+const sendTimetable = (formattedTimetable) => ({ reply, replyWithAnimation }) => {
     try {
-        const timetableForDate = getTimetableForDate(date)
-
-        if (!timetableForDate.length) {
+        if (!formattedTimetable) {
             return replyWithAnimation({ source: 'dog.mp4' })
-        }
-
-        const formattedTimetable = getFormattedTimetable(timetableForDate)
-
-        if (!formattedTimetable.trim()) {
-            return 'Ошибка с базой данных лекций'
         }
 
         return reply(formattedTimetable, Extra.HTML().webPreview(false))
     } catch (e) {
         console.log(e)
+
         return reply('Произошла внутрення ошибка')
     }
 }
 
-const timetableToday = (ctx) => {
-    return sendTimetable(ctx, formatDate(new Date()))
+const timetableToday = () => {
+    return getFormattedTimetableForDate(formatDate(new Date()))
 }
 
-const timetableTomorrow = (ctx) => {
-    const today = new Date()
-    today.setDate(today.getDate() + 1)
+const timetableTomorrow = () => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
 
-    return sendTimetable(ctx, formatDate(today))
+    return getFormattedTimetableForDate(formatDate(tomorrow))
 }
 
 module.exports = {
     timetableToday,
     timetableTomorrow,
+    sendTimetable,
 }

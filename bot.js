@@ -1,6 +1,7 @@
-const { Telegraf, Markup } = require('telegraf')
+const { Telegraf, Markup, Extra } = require('telegraf')
 
 const {
+    sendTimetable,
     timetableToday,
     timetableTomorrow,
 } = require('./timetable.js')
@@ -15,10 +16,42 @@ bot.start(({ reply }) => {
   )
 })
 
-bot.hears('Лекции сегодня', timetableToday)
-bot.hears('Лекции завтра', timetableTomorrow)
+bot.hears('Лекции сегодня', sendTimetable(timetableToday()))
+bot.hears('Лекции завтра', sendTimetable(timetableTomorrow()))
 
-bot.command('/today', timetableToday)
-bot.command('/tomorrow', timetableTomorrow)
+bot.command('/today', sendTimetable(timetableToday()))
+bot.command('/tomorrow', sendTimetable(timetableTomorrow()))
+
+bot.on('inline_query', (ctx) => {
+    try {
+        const formattedTimetableToday = timetableToday()
+        const formattedTimetableTomorrow = timetableTomorrow()
+
+        return ctx.answerInlineQuery([
+            {
+                type: 'article',
+                id: 'today',
+                title: 'Лекции сегодня',
+                input_message_content: {
+                    message_text: formattedTimetableToday ? `<b>Лекции сегодня</b>\n\n${formattedTimetableToday}` : 'Сегодня пар нет',
+                    ...Extra.HTML().webPreview(false),
+                },
+            },
+            {
+                type: 'article',
+                id: 'tomorrow',
+                title: 'Лекции завтра',
+                input_message_content: {
+                    message_text: formattedTimetableTomorrow ?  `<b>Лекции завтра</b>\n\n${formattedTimetableTomorrow}` : 'Завтра пар нет',
+                    ...Extra.HTML().webPreview(false),
+                },
+            }
+        ], {
+            cache_time: 20,
+        })
+    } catch (e) {
+        console.log(e)
+    }
+})
 
 bot.launch()
