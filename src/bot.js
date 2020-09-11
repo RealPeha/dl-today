@@ -14,28 +14,30 @@ bot.start(({ reply }) => {
         .keyboard(['Лекции сегодня', 'Лекции завтра'])
         .resize()
         .extra()
-  )
+    )
 })
 
-bot.hears('Лекции сегодня', (ctx) => sendTimetable(timetableToday())(ctx))
-bot.hears('Лекции завтра', (ctx) => sendTimetable(timetableTomorrow())(ctx))
+bot.hears('Лекции сегодня', ctx => sendTimetable(ctx, timetableToday()))
+bot.hears('Лекции завтра', ctx => sendTimetable(ctx, timetableTomorrow()))
 
-bot.command('/today', (ctx) => sendTimetable(timetableToday())(ctx))
-bot.command('/tomorrow', (ctx) => sendTimetable(timetableTomorrow())(ctx))
+bot.command('/today', ctx => sendTimetable(ctx, timetableToday()))
+bot.command('/tomorrow', ctx => sendTimetable(ctx, timetableTomorrow()))
 
-bot.on('inline_query', (ctx) => {
+bot.on('inline_query', ({ answerInlineQuery }) => {
     try {
         const formattedTimetableToday = timetableToday()
         const formattedTimetableTomorrow = timetableTomorrow()
 
-        return ctx.answerInlineQuery([
+        const extra = Extra.HTML().webPreview(false);
+
+        return answerInlineQuery([
             {
                 type: 'article',
                 id: 'today',
                 title: 'Лекции сегодня',
                 input_message_content: {
                     message_text: formattedTimetableToday ? `<b>Лекции сегодня</b>\n\n${formattedTimetableToday}` : 'Сегодня пар нет',
-                    ...Extra.HTML().webPreview(false),
+                    ...extra,
                 },
             },
             {
@@ -44,7 +46,7 @@ bot.on('inline_query', (ctx) => {
                 title: 'Лекции завтра',
                 input_message_content: {
                     message_text: formattedTimetableTomorrow ?  `<b>Лекции завтра</b>\n\n${formattedTimetableTomorrow}` : 'Завтра пар нет',
-                    ...Extra.HTML().webPreview(false),
+                    ...extra,
                 },
             }
         ], {
@@ -56,15 +58,15 @@ bot.on('inline_query', (ctx) => {
 })
 
 bot.command('update', async ({ reply }) => {
-    await db.update()
+    try {
+        await db.load()
 
-    return reply('Updated')
+        return reply('Updated')
+    } catch (e) {
+        console.log(e)
+
+        return reply(`Error: ${JSON.stringify(e)}`)
+    }
 })
 
-const launch = async () => {
-    await db.update()
-
-    bot.launch()
-}
-
-launch()
+module.exports = bot

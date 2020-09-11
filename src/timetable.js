@@ -10,30 +10,35 @@ const db = require('./db')
 const emojis = ['🧻', '🚽', '🗿', '🦷', '👨🏼‍🦳']
 
 const getTimetableForDate = (date) => {
-    return db.timetable.filter(lecture => lecture.date === date)
+    const formattedDate = formatDate(date)
+
+    return db.timetable.filter(({ date }) => date === formattedDate)
+}
+
+const formatLinks = lecture => {
+    const {
+        dlLink,
+        dlChatLink,
+        dlVisitLink,
+        googleMeetLink,
+    } = lecture
+
+    return [
+        link('DL', dlLink),
+        link('Вiдвiдування', dlVisitLink),
+        link('Чат', dlChatLink),
+        link('Google Meet', googleMeetLink),
+    ].filter(Boolean).join(', ')
 }
 
 const formatTimetable = (timetableForDate) => {
-    const formattedTimetable = timetableForDate.map(({
-        id,
-        time
-    }) => {
-        const {
-            name,
-            dlLink,
-            dlChatLink,
-            dlVisitLink,
-            googleMeetLink,
-        } = db.lectures[id] || {};
+    const formattedTimetable = timetableForDate.map(({ id, time }) => {
+        const lecture = db.lectures[id] || {}
 
-        const linksFormatted = [
-            link('DL', dlLink),
-            link('Вiдвiдування', dlVisitLink),
-            link('Чат', dlChatLink),
-            link('Google Meet', googleMeetLink)
-        ].filter(Boolean).join(', ')
+        const links = formatLinks(lecture)
 
-        return `${getRandomItem(emojis)} <code>[${time}]</code> ${name}${linksFormatted.length ? `\n- ${linksFormatted}` : ''}`
+        return `${getRandomItem(emojis)} <code>[${time}]</code> ${lecture.name}` +
+               `${links.length ? `\n- ${links}` : ''}`
     }).join('\n\n')
 
     return formattedTimetable
@@ -55,7 +60,7 @@ const getFormattedTimetableForDate = (date) => {
     return formattedTimetable
 }
 
-const sendTimetable = (formattedTimetable) => ({ reply, replyWithAnimation }) => {
+const sendTimetable = ({ reply, replyWithAnimation }, formattedTimetable) => {
     try {
         if (!formattedTimetable) {
             return replyWithAnimation({ source: 'dog.mp4' }, { caption: 'Лекций нет' })
@@ -70,15 +75,14 @@ const sendTimetable = (formattedTimetable) => ({ reply, replyWithAnimation }) =>
 }
 
 const timetableToday = () => {
-    console.log(formatDate(new Date()))
-    return getFormattedTimetableForDate(formatDate(new Date()))
+    return getFormattedTimetableForDate(new Date())
 }
 
 const timetableTomorrow = () => {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
 
-    return getFormattedTimetableForDate(formatDate(tomorrow))
+    return getFormattedTimetableForDate(tomorrow)
 }
 
 module.exports = {
