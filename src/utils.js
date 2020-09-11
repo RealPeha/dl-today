@@ -6,7 +6,7 @@ const formatDate = (date) => {
     const formatLength = (number, maxLength = 2) => number.toString().padStart(maxLength, '0')
 
     const day = date.getDate()
-    const month = date.getMonth()
+    const month = date.getMonth() + 1
     const year = date.getFullYear()
 
     return `${formatLength(day)}.${formatLength(month)}.${year}`
