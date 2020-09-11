@@ -60,7 +60,7 @@ const getFormattedTimetableForDate = (date) => {
 const sendTimetable = (formattedTimetable) => ({ reply, replyWithAnimation }) => {
     try {
         if (!formattedTimetable) {
-            return replyWithAnimation({ source: 'dog.mp4' })
+            return replyWithAnimation({ source: 'dog.mp4' }, { caption: 'Лекций нет' })
         }
 
         return reply(formattedTimetable, Extra.HTML().webPreview(false))
