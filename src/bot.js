@@ -1,4 +1,5 @@
 const { Telegraf, Markup, Extra } = require('telegraf')
+require('dotenv').config()
 
 const {
     sendTimetable,
@@ -8,6 +9,8 @@ const {
 const db = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
+
+bot.catch((e) => console.log('Bot catch: ', e))
 
 bot.start(({ reply }) => {
     return reply('👀', Markup
