@@ -6,6 +6,7 @@ const {
     timetableToday,
     timetableTomorrow,
 } = require('./timetable.js')
+const { formatDate } = require('./utils')
 const db = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
@@ -13,7 +14,7 @@ const bot = new Telegraf(process.env.TOKEN)
 bot.catch((e) => console.log('Bot catch: ', e))
 
 const logger = ({ message, from: { is_bot, language_code, ...from } }, next) => {
-    console.log(`${message.text} ${JSON.stringify(from)}`)
+    console.log(`[${formatDate(new Date())}] ${message.text} ${JSON.stringify(from)}`)
 
     return next()
 }
