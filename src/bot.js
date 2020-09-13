@@ -12,6 +12,12 @@ const bot = new Telegraf(process.env.TOKEN)
 
 bot.catch((e) => console.log('Bot catch: ', e))
 
+const logger = ({ message, from: { is_bot, language_code, ...from } }) => {
+    console.log(`${message.text} ${JSON.stringify(from)}`)
+}
+
+bot.use(logger)
+
 bot.start(({ reply }) => {
     return reply('👀', Markup
         .keyboard(['Лекции сегодня', 'Лекции завтра'])
