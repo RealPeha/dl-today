@@ -25,7 +25,7 @@
             {
                 "title": "Реферат",
                 "url": "https://dl.nure.ua/mod/assign/view.php?id=94636",
-                "description": "Здать до 15.11.2020"
+                "description": "Здати до 15.11.2020"
             }
         ]
     },
@@ -43,6 +43,8 @@
         "name": "Засоби технічного захисту інформації мікрохвильового та оптичного діапазонів"
     },
     "8": {
-        "name": "Організаційне забезпечення ТЗІ"
+        "name": "Організаційне забезпечення ТЗІ",
+        "dlLink": "https://dl.nure.ua/course/view.php?id=5006",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82585"
     }
 }
