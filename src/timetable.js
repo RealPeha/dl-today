@@ -21,6 +21,7 @@ const formatLinks = lecture => {
         dlChatLink,
         dlVisitLink,
         googleMeetLink,
+        otherLinks,
     } = lecture
 
     return [
@@ -28,7 +29,17 @@ const formatLinks = lecture => {
         link('Вiдвiдування', dlVisitLink),
         link('Чат', dlChatLink),
         link('Google Meet', googleMeetLink),
-    ].filter(Boolean).join(', ')
+    ].filter(Boolean).join(', ') + formatOtherLinks(otherLinks)
+}
+
+const formatOtherLinks = links => {
+    if (!links || !Array.isArray(links) || !links.length) {
+        return ''
+    }
+
+    return links.map(({ title, url, description }) => {
+        return `\n➞ ${link(title, url)}${description ? ` - ${description}` : ''}`
+    }).join('')
 }
 
 const formatTimetable = (timetableForDate) => {
@@ -37,8 +48,8 @@ const formatTimetable = (timetableForDate) => {
 
         const links = formatLinks(lecture)
 
-        return `${getRandomItem(emojis)} <code>[${time}]</code> ${lecture.name}` +
-               `${links.length ? `\n- ${links}` : ''}`
+        return `${getRandomItem(emojis)} <code>[${time}]</code> <b>${lecture.name}</b>` +
+               `${links.length ? `\n➞ ${links}` : ''}`
     }).join('\n\n')
 
     return formattedTimetable

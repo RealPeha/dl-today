@@ -20,7 +20,14 @@
     "4": {
         "name": "Системи мобільного зв'зку",
         "dlLink": "https://dl.nure.ua/course/view.php?id=5042",
-        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82801"
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82801",
+        "otherLinks": [
+            {
+                "title": "Реферат",
+                "url": "https://dl.nure.ua/mod/assign/view.php?id=94636",
+                "description": "Здать до 15.11.2020"
+            }
+        ]
     },
     "5": {
         "name": "Системи банківської безпеки",
