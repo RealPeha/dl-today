@@ -26,9 +26,10 @@ module.exports = (bot, times) => {
         cron.schedule(`${minute} ${hour} * * *`, async () => {
             const date = formatDate(new Date())
             const currentLecture = memoryDB.timetable.find(lecture => (lecture.date === date && lecture.time === time))
-            const lecture = memoryDB.lectures[currentLecture.id]
     
-            if (currentLecture && lecture) {
+            if (currentLecture) {
+                const lecture = memoryDB.lectures[currentLecture.id]
+                
                 await broadcast(bot,
                     `5 хвилин до лекції ${link(lecture.name, lecture.dlLink) || `<b>${lecture.name}</b>`}\n` +
                     `➞ ${link('Відмітити присутність', lecture.dlVisitLink)}\n` +
