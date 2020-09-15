@@ -1,4 +1,10 @@
 const axios = require('axios')
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+db.defaults({ users: {} }).write()
 
 const lectures = require('../data/lectures.json')
 const timetable = require('../data/timetable.json')
@@ -31,4 +37,7 @@ class DB {
     }
 }
 
-module.exports = new DB()
+module.exports = {
+    memoryDB: new DB(),
+    db,
+}

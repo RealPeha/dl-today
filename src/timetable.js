@@ -1,18 +1,14 @@
 const { Extra } = require('telegraf')
 
-const {
-    getRandomItem,
-    link,
-    formatDate
-} = require('./utils')
-const db = require('./db')
+const { getRandomItem, link, formatDate } = require('./utils')
+const { memoryDB } = require('./db')
 
 const emojis = ['🧻', '🚽', '🗿', '👨🏼‍🦳', '🖕🏻']
 
 const getTimetableForDate = (date) => {
     const formattedDate = formatDate(date)
 
-    return db.timetable.filter(({ date }) => date === formattedDate)
+    return memoryDB.timetable.filter(({ date }) => date === formattedDate)
 }
 
 const formatLinks = lecture => {
@@ -44,7 +40,7 @@ const formatOtherLinks = links => {
 
 const formatTimetable = (timetableForDate) => {
     const formattedTimetable = timetableForDate.map(({ id, time }) => {
-        const lecture = db.lectures[id] || {}
+        const lecture = memoryDB.lectures[id] || {}
 
         const links = formatLinks(lecture)
 
@@ -79,7 +75,7 @@ const sendTimetable = ({ reply, replyWithAnimation }, formattedTimetable) => {
 
         return reply(formattedTimetable, Extra.HTML().webPreview(false))
     } catch (e) {
-        console.log(e)
+        console.log('Send timetable error: ', e)
 
         return reply('Произошла внутрення ошибка')
     }
