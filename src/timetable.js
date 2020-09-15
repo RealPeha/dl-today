@@ -7,7 +7,7 @@ const {
 } = require('./utils')
 const db = require('./db')
 
-const emojis = ['🧻', '🚽', '🗿', '🦷', '👨🏼‍🦳']
+const emojis = ['🧻', '🚽', '🗿', '👨🏼‍🦳', '🖕🏻']
 
 const getTimetableForDate = (date) => {
     const formattedDate = formatDate(date)
