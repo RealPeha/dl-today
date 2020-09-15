@@ -6,8 +6,9 @@ const { memoryDB, db } = require('./db')
 
 module.exports = (bot, times) => {
     times.forEach(time => {
-        const [hour, minute] = time.split(':')
-    
+        const [hour, mm] = time.split(':')
+        const minute = mm - 5
+
         cron.schedule(`${minute} ${hour} * * *`, async () => {
             const date = formatDate(new Date())
             const currentLecture = memoryDB.timetable.find(lecture => (lecture.date === date && lecture.time === time))
@@ -20,10 +21,10 @@ module.exports = (bot, times) => {
                 for (const user of users) {
                     messages.push(bot.telegram.sendMessage(
                         user.id,
-                            `Почалась пара ${link(lecture.name, lecture.dlLink) || `<b>${lecture.name}</b>`}\n` +
+                            `5 хвилин до лекції ${link(lecture.name, lecture.dlLink) || `<b>${lecture.name}</b>`}\n` +
                             `➞ ${link('Відмітити присутність', lecture.dlVisitLink)}\n` +
-                            `${lecture.googleMeetLink ? `➞ ${link('Відкрити Google Meet', lecture.googleMeetLink)}\n` : ''}` +
-                            `${lecture.dlChatLink ? `➞ ${link('Відкрити чат', lecture.dlChatLink)}` : ''}`,
+                            `${lecture.googleMeetLink ? `➞ ${link('Підключитися до Google Meet', lecture.googleMeetLink)}\n` : ''}` +
+                            `${lecture.dlChatLink ? `➞ ${link('Війти в чат', lecture.dlChatLink)}` : ''}`,
                         Extra.HTML().webPreview(false),
                     ))
                     
