@@ -1,18 +1,14 @@
 const { Extra } = require('telegraf')
 
-const {
-    getRandomItem,
-    link,
-    formatDate
-} = require('./utils')
-const db = require('./db')
+const { getRandomItem, link, formatDate } = require('./utils')
+const { memoryDB } = require('./db')
 
-const emojis = ['🧻', '🚽', '🗿', '🦷', '👨🏼‍🦳']
+const emojis = ['🧻', '🚽', '🗿', '👨🏼‍🦳', '🖕🏻']
 
 const getTimetableForDate = (date) => {
     const formattedDate = formatDate(date)
 
-    return db.timetable.filter(({ date }) => date === formattedDate)
+    return memoryDB.timetable.filter(({ date }) => date === formattedDate)
 }
 
 const formatLinks = lecture => {
@@ -21,6 +17,7 @@ const formatLinks = lecture => {
         dlChatLink,
         dlVisitLink,
         googleMeetLink,
+        otherLinks,
     } = lecture
 
     return [
@@ -28,17 +25,27 @@ const formatLinks = lecture => {
         link('Вiдвiдування', dlVisitLink),
         link('Чат', dlChatLink),
         link('Google Meet', googleMeetLink),
-    ].filter(Boolean).join(', ')
+    ].filter(Boolean).join(', ') + formatOtherLinks(otherLinks)
+}
+
+const formatOtherLinks = links => {
+    if (!links || !Array.isArray(links) || !links.length) {
+        return ''
+    }
+
+    return links.map(({ title, url, description }) => {
+        return `\n➞ ${link(title, url)}${description ? ` - ${description}` : ''}`
+    }).join('')
 }
 
 const formatTimetable = (timetableForDate) => {
     const formattedTimetable = timetableForDate.map(({ id, time }) => {
-        const lecture = db.lectures[id] || {}
+        const lecture = memoryDB.lectures[id] || {}
 
         const links = formatLinks(lecture)
 
-        return `${getRandomItem(emojis)} <code>[${time}]</code> ${lecture.name}` +
-               `${links.length ? `\n- ${links}` : ''}`
+        return `${getRandomItem(emojis)} <code>[${time}]</code> <b>${lecture.name}</b>` +
+               `${links.length ? `\n➞ ${links}` : ''}`
     }).join('\n\n')
 
     return formattedTimetable
@@ -68,7 +75,7 @@ const sendTimetable = ({ reply, replyWithAnimation }, formattedTimetable) => {
 
         return reply(formattedTimetable, Extra.HTML().webPreview(false))
     } catch (e) {
-        console.log(e)
+        console.log('Send timetable error: ', e)
 
         return reply('Произошла внутрення ошибка')
     }

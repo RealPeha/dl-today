@@ -1,46 +1,66 @@
 const { Telegraf, Markup, Extra } = require('telegraf')
+
 require('dotenv').config()
 
-const {
-    sendTimetable,
-    timetableToday,
-    timetableTomorrow,
-} = require('./timetable.js')
-const { formatDate } = require('./utils')
-const db = require('./db')
+const { sendTimetable, timetableToday, timetableTomorrow } = require('./timetable.js')
+const { logger, storeUsers } = require('./middlewares')
+const { memoryDB, db } = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
+const times = ['7:45', '9:30', '11:15', '13:10', '14:55', '16:40']
+const extra = Extra.HTML().webPreview(false);
+const keyboard = (buttons) => Markup
+    .keyboard(['Лекции сегодня', 'Лекции завтра', ...buttons])
+    .resize()
+    .extra()
 
-bot.catch((e) => console.log('Bot catch: ', e))
+require('./cron')(bot, times)
 
-const logger = ({ message, from: { is_bot, language_code, ...from } }, next) => {
-    console.log(`[${formatDate(new Date())}] ${message.text} ${JSON.stringify(from)}`)
+bot.catch((e) => console.log('Bot error: ', e))
 
-    return next()
+const setNotification = (id, value) => {
+    db.get(`users.${id}`)
+        .set('notificationEnabled', value)
+        .write()
 }
 
+const enableNotification = ({ from, reply }) => {
+    setNotification(from.id, true)
+
+    return reply('Теперь ты будешь получать уведомление о начале лекции', keyboard(['Выключить уведомления']))
+}
+
+const disableNotification = ({ from, reply }) => {
+    setNotification(from.id, false)
+
+    return reply('Теперь ты не будешь получать уведомление о начале лекции', keyboard(['Включить уведомления']))
+} 
+
+bot.use(storeUsers)
 bot.use(logger)
 
-bot.start(({ reply }) => {
-    return reply('👀', Markup
-        .keyboard(['Лекции сегодня', 'Лекции завтра'])
-        .resize()
-        .extra()
-    )
+bot.start(({ reply, from }) => {
+    const user = db.get(`users.${from.id}`).value()
+
+    return reply('👀', keyboard([user.notificationEnabled
+        ? 'Выключить уведомления'
+        : 'Включить уведомления']))
 })
 
 bot.hears('Лекции сегодня', ctx => sendTimetable(ctx, timetableToday()))
 bot.hears('Лекции завтра', ctx => sendTimetable(ctx, timetableTomorrow()))
-
 bot.command('/today', ctx => sendTimetable(ctx, timetableToday()))
 bot.command('/tomorrow', ctx => sendTimetable(ctx, timetableTomorrow()))
+
+bot.hears('Включить уведомления', enableNotification)
+bot.hears('Выключить уведомления', disableNotification)
+bot.command('/enable_notification', enableNotification)
+bot.command('/disable_notification', disableNotification)
 
 bot.on('inline_query', ({ answerInlineQuery }) => {
     try {
         const formattedTimetableToday = timetableToday()
         const formattedTimetableTomorrow = timetableTomorrow()
-
-        const extra = Extra.HTML().webPreview(false);
 
         return answerInlineQuery([
             {
@@ -71,13 +91,13 @@ bot.on('inline_query', ({ answerInlineQuery }) => {
 
 bot.command('update', async ({ reply }) => {
     try {
-        await db.load()
+        await memoryDB.load()
 
         return reply('Updated')
     } catch (e) {
-        console.log(e)
+        console.log('Update error: ', e)
 
-        return reply(`Error: ${JSON.stringify(e)}`)
+        return reply(`Update error: ${JSON.stringify(e)}`)
     }
 })
 
