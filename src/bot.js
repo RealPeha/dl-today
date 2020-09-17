@@ -7,7 +7,7 @@ const { logger, storeUsers } = require('./middlewares')
 const { memoryDB, db } = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
-const times = ['7:45', '9:30', '11:15', '13:10', '14:55', '16:40']
+const times = ['07:45', '09:30', '11:15', '13:10', '14:55', '16:40']
 const extra = Extra.HTML().webPreview(false);
 const keyboard = (buttons) => Markup
     .keyboard(['Лекции сегодня', 'Лекции завтра', ...buttons])
@@ -39,6 +39,10 @@ const disableNotification = ({ from, reply }) => {
 bot.use(storeUsers)
 bot.use(logger)
 
+bot.on('new_chat_members', ctx => {
+    console.log(ctx.message.chat)
+})
+
 bot.start(({ reply, from }) => {
     const user = db.get(`users.${from.id}`).value()
 
@@ -56,6 +60,8 @@ bot.hears('Включить уведомления', enableNotification)
 bot.hears('Выключить уведомления', disableNotification)
 bot.command('/enable_notification', enableNotification)
 bot.command('/disable_notification', disableNotification)
+
+bot.command('/time', ({ reply }) => reply(new Date().toLocaleString()))
 
 bot.on('inline_query', ({ answerInlineQuery }) => {
     try {

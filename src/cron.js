@@ -20,8 +20,13 @@ const broadcast = (bot, message) => {
 module.exports = (bot, times) => {
     times.forEach(time => {
         const [hh, mm] = time.split(':')
-        const hour = +hh
-        const minute = mm - 5
+        let hour = +hh
+        let minute = mm - 5
+
+        if (minute < 0) {
+            minute = 60 + minute
+            hour -= 1
+        }
 
         cron.schedule(`${minute} ${hour} * * *`, async () => {
             const date = formatDate(new Date())
