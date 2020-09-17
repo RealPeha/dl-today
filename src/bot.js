@@ -7,14 +7,16 @@ const { logger, storeUsers } = require('./middlewares')
 const { memoryDB, db } = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
-const times = ['07:45', '09:30', '11:15', '13:10', '14:55', '16:40']
 const extra = Extra.HTML().webPreview(false);
 const keyboard = (buttons) => Markup
     .keyboard(['Лекции сегодня', 'Лекции завтра', ...buttons])
     .resize()
     .extra()
 
-require('./cron')(bot, times)
+const timesStart = ['07:45', '09:30', '11:15', '13:10', '14:55', '16:40', '12:15']
+const timesEnd = ['09:20', '11:05', '12:50', '14:45', '16:30', '18:15', '12:42']
+
+require('./cron')(bot, timesStart, timesEnd)
 
 bot.catch((e) => console.log('Bot error: ', e))
 

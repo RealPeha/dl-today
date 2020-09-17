@@ -17,9 +17,9 @@ const broadcast = (bot, message) => {
     return Promise.allSettled(messages)
 }
 
-module.exports = (bot, times) => {
-    times.forEach(time => {
-        const [hh, mm] = time.split(':')
+module.exports = (bot, timesStart, timesEnd) => {
+    timesStart.forEach((timeStart, index) => {
+        const [hh, mm] = timeStart.split(':')
         let hour = +hh
         let minute = mm - 5
 
@@ -30,7 +30,7 @@ module.exports = (bot, times) => {
 
         cron.schedule(`${minute} ${hour} * * *`, async () => {
             const date = formatDate(new Date())
-            const currentLecture = memoryDB.timetable.find(lecture => (lecture.date === date && lecture.time === time))
+            const currentLecture = memoryDB.timetable.find(lecture => (lecture.date === date && lecture.time === timeStart))
     
             if (currentLecture) {
                 const lecture = memoryDB.lectures[currentLecture.id]
@@ -43,6 +43,24 @@ module.exports = (bot, times) => {
                 )
             }
         })
+
+        if (timesEnd[index]) {
+            const [hh, mm] = timesEnd[index].split(':')
+            const hour = +hh
+            const minute = +mm
+
+            cron.schedule(`${minute} ${hour} * * *`, async () => {
+                const date = formatDate(new Date())
+                const todayLectures = memoryDB.timetable.filter(lecture => (lecture.date === date))
+                const currentLecture = todayLectures.findIndex(lecture => (lecture.date === date && lecture.time === timeStart))
+        
+                if (currentLecture !== -1) {
+                    const isLast = (todayLectures.length - 1) === currentLecture
+
+                    await broadcast(bot, `Лекція закінчилася${isLast ? '\nСьогодні пар більше немає, можеш відпочивати' : ''}`)
+                }
+            })
+        }
     })
 
 
