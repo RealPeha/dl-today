@@ -22,7 +22,25 @@ const storeUsers = ({ from: { is_bot, language_code, ...from } }, next) => {
     return next()
 }
 
+const onlyBot = ({ chat }, next) => {
+    if (chat.id < 0) {
+        return
+    }
+
+    return next()
+}
+
+const onlyAdmin = ({ from }, next) => {
+    if (!process.env.ADMINS.split(',').includes(from.id.toString())) {
+        return
+    }
+
+    return next()
+}
+
 module.exports = {
     logger,
     storeUsers,
+    onlyBot,
+    onlyAdmin,
 }

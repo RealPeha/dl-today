@@ -3,7 +3,7 @@ const { Telegraf, Markup, Extra } = require('telegraf')
 require('dotenv').config()
 
 const { sendTimetable, timetableToday, timetableTomorrow } = require('./timetable.js')
-const { logger, storeUsers } = require('./middlewares')
+const { logger, storeUsers, onlyBot, onlyAdmin } = require('./middlewares')
 const { memoryDB, db } = require('./db')
 
 const bot = new Telegraf(process.env.TOKEN)
@@ -45,7 +45,7 @@ bot.on('new_chat_members', ctx => {
     console.log(ctx.message.chat)
 })
 
-bot.start(({ reply, from }) => {
+bot.start(onlyBot, ({ reply, from }) => {
     const user = db.get(`users.${from.id}`).value()
 
     return reply('👀', keyboard([user.notificationEnabled
@@ -53,17 +53,23 @@ bot.start(({ reply, from }) => {
         : 'Включить уведомления']))
 })
 
-bot.hears('Лекции сегодня', ctx => sendTimetable(ctx, timetableToday()))
-bot.hears('Лекции завтра', ctx => sendTimetable(ctx, timetableTomorrow()))
+bot.hears('Лекции сегодня', onlyBot, ctx => sendTimetable(ctx, timetableToday()))
+bot.hears('Лекции завтра', onlyBot, ctx => sendTimetable(ctx, timetableTomorrow()))
 bot.command('/today', ctx => sendTimetable(ctx, timetableToday()))
 bot.command('/tomorrow', ctx => sendTimetable(ctx, timetableTomorrow()))
 
-bot.hears('Включить уведомления', enableNotification)
-bot.hears('Выключить уведомления', disableNotification)
-bot.command('/enable_notification', enableNotification)
-bot.command('/disable_notification', disableNotification)
+bot.hears('Включить уведомления', onlyBot, enableNotification)
+bot.hears('Выключить уведомления', onlyBot, disableNotification)
+bot.command('/enable_notification', onlyBot, enableNotification)
+bot.command('/disable_notification', onlyBot, disableNotification)
 
-bot.command('/time', ({ reply }) => reply(new Date().toLocaleString()))
+bot.command('/time', onlyAdmin, onlyBot, ({ reply }) => reply(new Date().toLocaleString()))
+
+bot.command('/clear', onlyAdmin, async ({ reply, deleteMessage }) => {
+    const msg = await reply('Да.', Markup.removeKeyboard().extra())
+
+    return deleteMessage(msg.message_id)
+})
 
 bot.on('inline_query', ({ answerInlineQuery }) => {
     try {
@@ -97,7 +103,7 @@ bot.on('inline_query', ({ answerInlineQuery }) => {
     }
 })
 
-bot.command('update', async ({ reply }) => {
+bot.command('update', onlyAdmin, onlyBot, async ({ reply }) => {
     try {
         await memoryDB.load()
 
