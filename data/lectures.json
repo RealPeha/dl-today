@@ -10,8 +10,7 @@
         "name": "Безпека iнформацiйних та комунiкацiйних систем",
         "dlLink": "https://dl.nure.ua/course/view.php?id=4672",
         "dlChatLink": "https://dl.nure.ua/mod/chat/view.php?id=95563",
-        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=80581",
-        "googleMeetLink": "https://meet.google.com/rzg-uend-ndf"
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=80581"
     },
     "3": {
         "name": "Фiзичне виховання",
@@ -21,7 +20,7 @@
         "name": "Системи мобільного зв'зку",
         "dlLink": "https://dl.nure.ua/course/view.php?id=5042",
         "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82801",
-        "googleMeetLink": "https://meet.google.com/stn-oyyo-cwy",
+        "googleMeetLink": "https://meet.google.com/msz-meqw-biy",
         "otherLinks": [
             {
                 "title": "Реферат",
@@ -33,14 +32,12 @@
     "5": {
         "name": "Системи банківської безпеки",
         "dlLink": "https://dl.nure.ua/course/view.php?id=5005",
-        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82579",
-        "googleMeetLink": "https://meet.google.com/mug-gjha-bvx"
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82579"
     },
     "6": {
         "name": "Цифрова обробка сигналів",
         "dlLink": "https://dl.nure.ua/course/view.php?id=5007",
-        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82591",
-        "googleMeetLink": "https://meet.google.com/hrt-gytc-nwp"
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82591"
     },
     "7": {
         "name": "Засоби технічного захисту інформації мікрохвильового та оптичного діапазонів"
