@@ -31,6 +31,10 @@ const onlyBot = ({ chat }, next) => {
 }
 
 const onlyAdmin = ({ from }, next) => {
+    if (!process.env.ADMINS) {
+        return
+    }
+    
     if (!process.env.ADMINS.split(',').includes(from.id.toString())) {
         return
     }

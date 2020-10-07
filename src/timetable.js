@@ -2,8 +2,7 @@ const { Extra } = require('telegraf')
 
 const { getRandomItem, link, formatDate } = require('./utils')
 const { memoryDB } = require('./db')
-
-const emojis = ['🧻', '🚽', '🗿', '👨🏼‍🦳', '🖕🏻']
+const { EMOJIS, LECTURE_TYPES } = require('./constants')
 
 const getTimetableForDate = (date) => {
     const formattedDate = formatDate(date)
@@ -11,7 +10,7 @@ const getTimetableForDate = (date) => {
     return memoryDB.timetable.filter(({ date }) => date === formattedDate)
 }
 
-const formatLinks = lecture => {
+const formatLinks = (lecture, isFull) => {
     const {
         dlLink,
         dlChatLink,
@@ -25,7 +24,7 @@ const formatLinks = lecture => {
         link('Вiдвiдування', dlVisitLink),
         link('Чат', dlChatLink),
         link('Google Meet', googleMeetLink),
-    ].filter(Boolean).join(', ') + formatOtherLinks(otherLinks)
+    ].filter(Boolean).join(', ') + (isFull ? formatOtherLinks(otherLinks) : '')
 }
 
 const formatOtherLinks = links => {
@@ -38,27 +37,27 @@ const formatOtherLinks = links => {
     }).join('')
 }
 
-const formatTimetable = (timetableForDate) => {
-    const formattedTimetable = timetableForDate.map(({ id, time }) => {
+const formatTimetable = (timetableForDate, isFull) => {
+    const formattedTimetable = timetableForDate.map(({ id, time, type }) => {
         const lecture = memoryDB.lectures[id] || {}
 
-        const links = formatLinks(lecture)
+        const links = formatLinks(lecture, isFull)
 
-        return `${getRandomItem(emojis)} <code>[${time}]</code> <b>${lecture.name}</b>` +
+        return `${getRandomItem(EMOJIS)} ${LECTURE_TYPES[type] ? ` <code>${LECTURE_TYPES[type]}</code> ` : ''}<code>[${time}]</code> <b>${lecture.name}</b>` +
                `${links.length ? `\n➞ ${links}` : ''}`
     }).join('\n\n')
 
     return formattedTimetable
 }
 
-const getFormattedTimetableForDate = (date) => {
+const getFormattedTimetableForDate = (date, isFull = false) => {
     const timetableForDate = getTimetableForDate(date)
 
     if (!timetableForDate.length) {
         return null
     }
 
-    const formattedTimetable = formatTimetable(timetableForDate)
+    const formattedTimetable = formatTimetable(timetableForDate, isFull)
 
     if (!formattedTimetable.trim()) {
         return 'Ошибка с базой данных лекций'
@@ -81,15 +80,15 @@ const sendTimetable = ({ reply, replyWithAnimation }, formattedTimetable) => {
     }
 }
 
-const timetableToday = () => {
-    return getFormattedTimetableForDate(new Date())
+const timetableToday = (isFull = false) => {
+    return getFormattedTimetableForDate(new Date(), isFull)
 }
 
-const timetableTomorrow = () => {
+const timetableTomorrow = (isFull = false) => {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
 
-    return getFormattedTimetableForDate(tomorrow)
+    return getFormattedTimetableForDate(tomorrow, isFull)
 }
 
 module.exports = {

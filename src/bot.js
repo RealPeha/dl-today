@@ -57,6 +57,8 @@ bot.hears('Лекции сегодня', onlyBot, ctx => sendTimetable(ctx, time
 bot.hears('Лекции завтра', onlyBot, ctx => sendTimetable(ctx, timetableTomorrow()))
 bot.command('/today', ctx => sendTimetable(ctx, timetableToday()))
 bot.command('/tomorrow', ctx => sendTimetable(ctx, timetableTomorrow()))
+bot.command('/today_full', ctx => sendTimetable(ctx, timetableToday(true)))
+bot.command('/tomorrow_full', ctx => sendTimetable(ctx, timetableTomorrow(true)))
 
 bot.hears('Включить уведомления', onlyBot, enableNotification)
 bot.hears('Выключить уведомления', onlyBot, disableNotification)
