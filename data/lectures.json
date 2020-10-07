@@ -9,12 +9,41 @@
     "2": {
         "name": "Безпека iнформацiйних та комунiкацiйних систем",
         "dlLink": "https://dl.nure.ua/course/view.php?id=4672",
-        "dlChatLink": "https://dl.nure.ua/mod/chat/view.php?id=95563",
-        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=80581"
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=80581",
+        "otherLinks": [
+            {
+                "title": "ЛР №1",
+                "url": "https://dl.nure.ua/mod/folder/view.php?id=96866",
+                "description": "Здати до 21.09.20"
+            },
+            {
+                "title": "ПЗ №1",
+                "url": "https://dl.nure.ua/mod/folder/view.php?id=104649",
+                "description": "Здати до 02.10.20 15:00"
+            }
+        ]
     },
     "3": {
         "name": "Фiзичне виховання",
-        "dlLink": "https://dl.nure.ua/course/view.php?id=4442"
+        "dlLink": "https://dl.nure.ua/course/view.php?id=6441",
+        "otherLinks": [
+            {
+                "title": "Завдання 1",
+                "url": "https://dl.nure.ua/mod/page/view.php?id=101307"
+            },
+            {
+                "title": "Тест 1",
+                "url": "https://dl.nure.ua/mod/quiz/view.php?id=101489"
+            },
+            {
+                "title": "Завдання 2",
+                "url": "https://dl.nure.ua/mod/page/view.php?id=104828"
+            },
+            {
+                "title": "Тест 2",
+                "url": "https://dl.nure.ua/mod/quiz/view.php?id=105121"
+            }
+        ]
     },
     "4": {
         "name": "Системи мобільного зв'зку",
@@ -37,10 +66,19 @@
     "6": {
         "name": "Цифрова обробка сигналів",
         "dlLink": "https://dl.nure.ua/course/view.php?id=5007",
-        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82591"
+        "dlChatLink": "https://dl.nure.ua/mod/chat/view.php?id=103624",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82591",
+        "otherLinks": [
+            {
+                "title": "ЛР №1",
+                "url": "https://dl.nure.ua/mod/resource/view.php?id=101486"
+            }
+        ]
     },
     "7": {
-        "name": "Засоби технічного захисту інформації мікрохвильового та оптичного діапазонів"
+        "name": "Засоби технічного захисту інформації мікрохвильового та оптичного діапазонів",
+        "dlLink": "https://dl.nure.ua/course/view.php?id=5039",
+        "dlVisitLink": "https://dl.nure.ua/mod/attendance/view.php?id=82783"
     },
     "8": {
         "name": "Організаційне забезпечення ТЗІ",
