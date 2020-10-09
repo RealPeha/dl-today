@@ -79,8 +79,7 @@ module.exports = (bot, timesStart, timesEnd) => {
             const phrases = [
                 `Завтра раненько вставать, пара ${formatterLecture} на <code>7:45</code>, тому довго не сиди`,
                 `А ти не забув, що у тебе завтра вранці в <code>7:45</code> лекція ${formatterLecture}? Як би там не було, гайда до кроватки прямо зараз!`,
-                `Якщо не хочеш проспати пару ${formatterLecture} на <code>7:45</code>, то лягай спатки`,
-                `Я, звичайно, не можу тобі вказувати, але у тебе завтра на <code>7:45</code> пара ${formatterLecture} і якщо ти хочеш проявляти активність на ній то лягай спати`,
+                `Якщо не хочеш проспати пару ${formatterLecture} на <code>7:45</code>, то лягай спатки`
             ]
 
             await broadcast(bot, phrases[Math.floor(Math.random() * phrases.length)])
