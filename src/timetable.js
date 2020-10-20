@@ -1,4 +1,5 @@
 const { Extra } = require('telegraf')
+const axios = require('axios')
 
 const { getRandomItem, link, formatDate } = require('./utils')
 const { memoryDB } = require('./db')
@@ -66,9 +67,22 @@ const getFormattedTimetableForDate = (date, isFull = false) => {
     return formattedTimetable
 }
 
-const sendTimetable = ({ reply, replyWithAnimation }, formattedTimetable) => {
+const sendTimetable = async ({ reply, replyWithAnimation, replyWithVideo }, formattedTimetable) => {
     try {
         if (!formattedTimetable) {
+            if (Math.random() > 0.5) {
+                try {
+                    const gifs = (await axios.get('https://api.tenor.com/v1/random?key=XF1HV0X0MUY2&q=sad&limit=1')).data
+
+                    const media = gifs.results[0].media[0]
+                    const gif = media.gif.url
+
+                    return replyWithAnimation(gif, { caption: 'Лекций нет' })
+                } catch (e) {
+                    return replyWithAnimation({ source: 'dog.mp4' }, { caption: 'Лекций нет' })
+                }
+            }
+
             return replyWithAnimation({ source: 'dog.mp4' }, { caption: 'Лекций нет' })
         }
 
